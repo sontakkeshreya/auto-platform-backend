@@ -1,7 +1,19 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,Depends
 from app.api.v1.router import api_router
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+from app.core.database import engine
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup code
+    print("✅ Database connected")
+    yield
+    # Shutdown code (optional)
+
+app = FastAPI(lifespan=lifespan)
+
 app.include_router(api_router, prefix="/api/v1")
 
 
